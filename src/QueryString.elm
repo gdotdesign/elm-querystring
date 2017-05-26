@@ -12,6 +12,7 @@ module QueryString
         , many
         , string
         , int
+        , toList
         )
 
 {-| This module exposes functions for working with query strings.
@@ -157,6 +158,20 @@ string =
 int : Parser s Int
 int =
     Combine.Num.int
+
+
+{-| Converts a QueryString into a list.
+-}
+toList : QueryString -> List (String, String)
+toList (QueryString qs) =
+    qs
+        |> Dict.toList
+        |> List.filterMap
+        ( \(key, list) ->
+            list
+                |> List.head
+                |> Maybe.map (\value -> (key, value))
+        )
 
 
 {-| Render a QueryString to a String.
